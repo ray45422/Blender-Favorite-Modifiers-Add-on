@@ -20,12 +20,11 @@
 
 
 import bpy
-from bl_ui.properties_data_modifier import (DATA_PT_gpencil_modifiers,
-                                            DATA_PT_modifiers)
+from bl_ui.properties_data_modifier import (DATA_PT_modifiers)
 from bpy.app.handlers import persistent
 from bpy.props import (BoolProperty, EnumProperty, FloatProperty,
                        PointerProperty, StringProperty)
-from bpy.types import (AddonPreferences, GpencilModifier, Menu, Modifier,
+from bpy.types import (AddonPreferences, Menu, Modifier,
                        Operator, Panel, PropertyGroup, Scene)
 from bpy.utils import register_class, unregister_class
 
@@ -48,7 +47,6 @@ class FavoriteModifiersAddonPreferences(AddonPreferences):
 
     curve_modifiers: StringProperty(default="")
     lattice_modifiers: StringProperty(default="")
-    gpencil_modifiers: StringProperty(default="")
     mesh_modifiers: StringProperty(default="")
 
     display_style_items = [
@@ -65,7 +63,7 @@ class FavoriteModifiersAddonPreferences(AddonPreferences):
         layout = self.layout
         col = layout.column()
         col.label(text="Favorite modifiers grouped per object type:")
-        col.label(text="Mesh, Lattice, Curve/Font/Surface, Grease Pencil.")
+        col.label(text="Mesh, Lattice, Curve/Font/Surface.")
         col.label(text="Favorite modifiers stored in User Preferences.")
         layout.prop(self, "display_style")
 
@@ -183,10 +181,7 @@ def draw_favorite_modifiers(self, context):
         addon_prefs = prefs.addons[__name__].preferences
         display_style = addon_prefs.display_style
 
-        if context.active_object.type == "GPENCIL":
-            _operator = "object.gpencil_modifier_add"
-        else:
-            _operator = "object.modifier_add"
+        _operator = "object.modifier_add"
 
         if display_style == 'BUTTONS':
             grid_flow = layout.grid_flow(
@@ -227,11 +222,7 @@ def register():
     for mod in Modifier.bl_rna.properties['type'].enum_items:
         modifiers.append(mod)
 
-    for mod in GpencilModifier.bl_rna.properties['type'].enum_items:
-        modifiers.append(mod)
-
     DATA_PT_modifiers.prepend(draw_favorite_modifiers)
-    DATA_PT_gpencil_modifiers.prepend(draw_favorite_modifiers)
 
 
 def unregister():
@@ -239,7 +230,6 @@ def unregister():
         unregister_class(cls)
 
     DATA_PT_modifiers.remove(draw_favorite_modifiers)
-    DATA_PT_gpencil_modifiers.remove(draw_favorite_modifiers)
 
 
 if __name__ == "__main__":

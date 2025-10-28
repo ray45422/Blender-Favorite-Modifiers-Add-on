@@ -7,7 +7,6 @@ Favorite modifiers grouped per object type:
 * Mesh
 * Lattice
 * Curve/Font/Surface
-* Grease Pencil
 
 Favorite modifiers stored in User Preferences, so use **Preferences -> Save Preferences**.
 
